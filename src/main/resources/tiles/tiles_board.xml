@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+       
+<tiles-definitions>
+
+	<definition name="/board/notice" extends="baseLayout">
+		<put-attribute name="title" value="공지사항" />
+		<put-attribute name="body" value="/WEB-INF/views/board/notice.jsp" />
+	</definition>
+	
+	<definition name="/board/event" extends="baseLayout">
+		<put-attribute name="title" value="이벤트" />
+		<put-attribute name="body" value="/WEB-INF/views/board/event.jsp" />
+	</definition>
+	
+	<definition name="/board/review" extends="baseLayout">
+		<put-attribute name="title" value="영화리뷰" />
+		<put-attribute name="body" value="/WEB-INF/views/board/review.jsp" />
+	</definition>
+
+	<definition name="/board/noticeView" extends="baseLayout">
+		<put-attribute name="title" value="공지사항" />
+		<put-attribute name="body" value="/WEB-INF/views/board/noticeView.jsp" />
+	</definition>
+	
+		<definition name="/board/eventView" extends="baseLayout">
+		<put-attribute name="title" value="이벤트" />
+		<put-attribute name="body" value="/WEB-INF/views/board/eventView.jsp" />
+	</definition>
+	
+		<definition name="/board/reviewView" extends="baseLayout">
+		<put-attribute name="title" value="영화리뷰" />
+		<put-attribute name="body" value="/WEB-INF/views/board/reviewView.jsp" />
+	</definition>
+	
+		
+		<definition name="/board/reviewForm" extends="baseLayout">
+		<put-attribute name="title" value="글쓰기" />
+		<put-attribute name="body" value="/WEB-INF/views/board/reviewForm.jsp" />
+	</definition>
+	
+	<definition name="/board/eventForm" extends="baseLayout">
+		<put-attribute name="title" value="글쓰기" />
+		<put-attribute name="body" value="/WEB-INF/views/board/eventForm.jsp" />
+	</definition>
+	
+		<definition name="/board/noticeForm" extends="baseLayout">
+		<put-attribute name="title" value="글쓰기" />
+		<put-attribute name="body" value="/WEB-INF/views/board/noticeForm.jsp" />
+	</definition>
+	
+</tiles-definitions>

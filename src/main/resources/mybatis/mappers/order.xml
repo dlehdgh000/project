@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- mapping -->
+<mapper namespace ="mapper.order">
+
+	<!-- movie_details table resultMap -->
+	<resultMap id = "orderMovieResult" type = "OrderVO">
+		<result property = "movie_id" column = "movie_id"/>
+		<result property = "movie_title" column = "movie_title"/>
+		<result property = "movie_genre" column = "movie_genre"/>
+		<result property = "movie_time" column = "movie_time"/>
+		<result property = "movie_director" column = "movie_director"/>
+		<result property = "movie_actor" column = "movie_actor"/>
+		<result property = "movie_story" column = "movie_story"/>
+		<result property = "movie_openday" column = "movie_openday"/>
+		<result property = "movie_rank" column = "movie_rank"/>
+		<result property = "movie_producer" column = "movie_producer"/>
+		<result property = "movie_status" column = "movie_status"/>
+		<result property = "movie_filename" column = "filename"/>
+		<result property = "movie_people_qty" column = "movie_people_qty"/>
+		<result property = "movie_running_time" column = "movie_running_time"/>
+		<result property = "ticket_number" column = "ticket_number"/>
+		<result property = "pay_order_time" column = "pay_order_time"/>
+		<result property = "card_number" column = "card_number"/>
+		<result property = "card_com_name" column = "card_com_name"/>
+		<result property = "movie_price" column = "movie_price"/>
+		
+	</resultMap>
+	
+	<resultMap id = "seat" type = "OrderVO">
+		<result property = "movice_place" column = "movice_place"/>
+		<result property = "movie_seat_number" column = "movie_seat_number"/>
+		<result property = "seatstatus" column = "seatstatus"/>
+	</resultMap>
+
+	<!-- 빠른 예매 화면에 나올 리스트 -->
+	<select id = "selectMovieTitleList" resultMap="orderMovieResult">
+		<![CDATA[
+		         select t.*
+          from(
+			select g.*,d.fileName from MOVIE_DETAILS g, movie_detail_image d
+        	where g.movie_id=d.movie_id 
+        	and d.filetype='detail_image'
+        	and movie_status = 'y'
+            order by g.movie_id desc)  t
+	             where   rowNum <16
+		]]>
+	</select>
+	
+		<select id = "selectMovieTitleList1" resultMap="orderMovieResult">
+		<![CDATA[
+		         select t.*
+          from(
+			select g.*,d.fileName from MOVIE_DETAILS g, movie_detail_image d
+        	where g.movie_id=d.movie_id 
+        	and d.filetype='detail_image'
+        	and movie_status = 'e'
+            order by g.movie_id desc)  t
+	             where   rowNum <16
+		]]>
+	</select>
+	
+	
+	<select id = "seatList" resultMap = "seat">
+		<![CDATA[
+		select * from movie_seat
+		]]>
+	</select>
+	
+		<select id = "seatList1" resultMap = "seat">
+		<![CDATA[
+		select * from movie_seat1
+		]]>
+	</select>
+	
+		<select id = "seatList2" resultMap = "seat">
+		<![CDATA[
+		select * from movie_seat2
+		]]>
+	</select>
+	
+	<update id = "seatStatusUpdate" parameterType = "java.util.Map">
+		<![CDATA[
+		update movie_seat
+		set seatstatus ='n'
+		where movie_place = #{movie_place} and movie_seat_number = #{movie_seat_number}
+		]]>
+	</update>
+	
+		<update id = "seatStatusUpdate1" parameterType = "java.util.Map">
+		<![CDATA[
+		update movie_seat1
+		set seatstatus ='n'
+		where movie_place = #{movie_place} and movie_seat_number = #{movie_seat_number}
+		]]>
+	</update>
+	
+		<update id = "seatStatusUpdate2" parameterType = "java.util.Map">
+		<![CDATA[
+		update movie_seat2
+		set seatstatus ='n'
+		where movie_place = #{movie_place} and movie_seat_number = #{movie_seat_number}
+		]]>
+	</update>
+	
+	<insert id = "addOrder" parameterType = "java.util.Map">
+		<![CDATA[
+			INSERT INTO MOVIE_ORDER(
+									MORDER_SEQ_NUM,
+									MEMBER_ID,
+									MOVIE_ID,
+									MOVIE_PRICE,
+									MOVIE_TITLE,
+									MOVIE_PLACE,
+									MOVIE_SEAT_NUMBER,
+									MOVIE_PEOPLE_QTY,
+									MOVIE_FILENAME,
+									PAY_METHOD,
+									CARD_COM_NAME,
+									CARD_NUMBER,
+									CARD_PAY_MONTH,
+									ORDERD_AGE,
+									PAY_ORDERER_HP_NUM,
+									TICKET_NUMBER,
+									movie_screening_date,
+                                    movie_running_time
+									)
+			VALUES(
+					MORDER_SEQ_NUM.nextval,
+					#{member_id},
+					#{movie_id},
+					#{movie_price},
+					#{movie_title},
+					#{movie_place},
+					#{movie_seat_number},
+					#{movie_people_qty},
+					null,
+					#{pay_method},
+					#{card_com_name},
+					#{card_number},
+					#{card_pay_month},
+					#{orderd_age},
+					#{pay_orderer_hp_num},
+					#{ticket_number},
+					#{movie_screening_date},
+					#{movie_running_time}
+					)
+		]]>
+	</insert>
+	
+	<select id = "findMovieId" resultType = "int" parameterType = "String">
+		<![CDATA[
+		select movie_id from movie_details
+		where movie_title = #{movie_title}
+		]]>
+	</select>
+	
+	<select id="selectMyOrderDetailInfo" resultMap="orderMovieResult"   parameterType="String"  >
+	    <![CDATA[
+			select * from movie_order
+			where member_id = #{member_id}
+    	]]>
+	</select>	
+
+
+</mapper>

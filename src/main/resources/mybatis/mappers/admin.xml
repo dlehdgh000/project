@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- mapping -->
+<mapper namespace ="mapper.admin">
+	
+	<resultMap id="adminMovieVO" type="MovieVO">
+		<result property="movie_id" column="movie_id" />
+		<result property="movie_title" column="movie_title" />
+		<result property="movie_keyword" column="movie_keyword" />
+		<result property="movie_genre" column="movie_genre" />
+		<result property="movie_time" column="movie_time" />
+		<result property="movie_director" column="movie_director" />
+		<result property="movie_actor" column="movie_actor" />
+		<result property="movie_story" column="movie_sales_story" />
+		<result property="movie_openday" column="movie_openday" />
+		<result property="movie_rank" column="movie_rank" />
+		<result property="movie_producer" column="movie_producer" />
+		<result property="movie_status" column="movie_status" />
+		<result property="filename" column="filename" />
+	</resultMap>
+	
+	<resultMap id = "adminImageFileVO" type = "imageFileVO">
+		<result property = "image_id" column = "image_id"/>
+		<result property = "boardNO" column = "boardNO"/>
+		<result property = "fileName" column = "fileName"/>
+		<result property = "fileType" column = "fileType"/>
+		<result property = "creDate" column = "creDate"/>
+		<result property = "reg_id" column = "reg_id"/>
+	</resultMap>
+	
+
+	<insert id = "movieInsert" parameterType = "java.util.Map">
+	insert into movie_details(
+                            movie_id,
+                            movie_title,
+                            movie_genre,
+                            movie_time,
+                            movie_director,
+                            movie_actor,
+                            movie_story,
+                            movie_openday,
+                            movie_rank,
+                            movie_producer,
+                            movie_status
+                            )
+	values                  (
+                            #{movie_id},
+                            #{movie_title},
+                            #{movie_genre},
+                            #{movie_time},
+                            #{movie_director},
+                            #{movie_actor},
+                            #{movie_story},
+                            #{movie_openday},
+                            #{movie_rank},
+                            #{movie_producer},
+                            #{movie_status}
+                            )
+	
+	</insert>
+	
+	<select id = "NewMovieId" resultType = "int">
+		<![CDATA[
+		select nvl(max(movie_id),0)+1 from movie_details
+		]]>
+	</select>
+	
+	<insert id="insertMovieImageFile" parameterType="imageFileVO"   >
+		<selectKey resultType="int" keyProperty="image_id" order="BEFORE">
+	    	select seq_image_id.nextval from dual
+	    </selectKey>
+	    <![CDATA[
+		   insert into movie_detail_image   (image_id,
+		                                     movie_id,
+																				 fileName,
+																				 fileType
+																				 )
+											   					values(#{image_id},
+											   					 			 #{movie_id},
+											   							 	 #{fileName},
+											   								 #{fileType}
+											   								)
+		]]>
+	</insert>
+	
+	<select id = "movieManageList" resultMap = "adminMovieVO">
+		<![CDATA[
+		            		         select t.*
+          from(
+			select g.*,d.fileName from MOVIE_DETAILS g, movie_detail_image d
+        	where g.movie_id=d.movie_id 
+        	and d.filetype='detail_image'
+            order by g.movie_id asc)  t
+	             where   rowNum <16
+		]]>
+	</select>
+	
+	<delete id = "deleteMovie" parameterType = "int">
+		<![CDATA[
+		delete from movie_details
+		where movie_id = #{movie_id}
+		]]>
+	</delete>
+	
+	<select id = "deleteMovieImage" resultMap = "adminImageFileVO" parameterType = "int">
+		<![CDATA[
+		select filename from movie_detail_image
+		where movie_id = #{movie_id}
+		]]>
+	</select>
+	
+	<delete id = "deleteMovieImageDB" parameterType = "int">
+		<![CDATA[
+		delete from movie_detail_image
+		where movie_id = #{movie_id}
+		]]>
+	</delete>
+	
+	<update id="updateMovieInfo" parameterType="java.util.HashMap" >
+	   update movie_details
+	    <set> 
+	      <if test=" movie_title !='' and movie_title !=null">
+	        movie_title =#{movie_title},
+	      </if>
+	      <if test=" movie_genre !='' and movie_genre !=null">
+	      	movie_genre =#{movie_genre},
+	      </if>
+	      <if test="movie_time !='' and movie_time != null">
+	      	movie_time = #{movie_time},
+	      </if>
+	      <if test="movie_director != '' and movie_director != null">
+	      	movie_director = #{movie_director},
+	      </if>
+	      <if test="movie_story != '' and movie_story != null">
+	      	movie_story = #{movie_story},
+	      </if>
+	      <if test="movie_producer != '' and movie_producer != null">
+	      	movie_producer = #{movie_producer},
+	      </if>
+	      <if test="movie_actor != '' and movie_actor != null">
+	      	movie_actor = #{movie_actor},
+	      </if>
+	      
+	     </set>
+	    where 
+	    movie_id=#{movie_id}
+	</update>
+	
+	<update id="allModifyMovie" parameterType = "java.util.Map">
+		<![CDATA[
+		update movie_details
+		set movie_title = #{movie_title},
+		movie_genre = #{movie_genre},
+		movie_time = #{movie_time},
+		movie_director = #{movie_director},
+		movie_actor = #{movie_actor},
+		movie_story = #{movie_story},
+		movie_openday = #{movie_openday},
+		movie_rank = #{movie_rank},
+		movie_producer = #{movie_producer},
+		movie_status = #{movie_status}
+		where movie_id = #{movie_id}
+		]]>
+	</update>
+	
+	<select id = "selectMovieImageFileList" resultMap = "adminImageFileVO" parameterType = "int">
+	<![CDATA[
+	select * from  movie_detail_image 
+		    	where  
+			    movie_id= #{movie_id}
+			    order by image_id asc	
+	]]>
+	</select>
+	
+	<update id = "updateMovieImage" parameterType = "imageFileVO">
+		update movie_detail_image
+		set fileName = #{fileName}
+		where
+		movie_id=#{movie_id} and image_id=#{image_id}
+	</update>
+	
+	<update id = "updateSeat" parameterType = "java.util.HashMap">
+		update movie_seat
+		set seatStatus = 'y'
+		where movie_place = #{movie_place}
+	</update>
+	
+		<update id = "updateSeat1" parameterType = "java.util.HashMap">
+		update movie_seat1
+		set seatStatus = 'y'
+		where movie_place = #{movie_place}
+	</update>
+	
+		<update id = "updateSeat2" parameterType = "java.util.HashMap">
+		update movie_seat2
+		set seatStatus = 'y'
+		where movie_place = #{movie_place}
+	</update>
+	
+	<update id = "updateSeatN" parameterType = "java.util.HashMap">
+		update movie_seat
+		set seatStatus = 'n'
+		where movie_place = #{movie_place}
+	</update>
+	
+		<update id = "updateSeatN1" parameterType = "java.util.HashMap">
+		update movie_seat1
+		set seatStatus = 'n'
+		where movie_place = #{movie_place}
+	</update>
+	
+		<update id = "updateSeatN2" parameterType = "java.util.HashMap">
+		update movie_seat2
+		set seatStatus = 'n'
+		where movie_place = #{movie_place}
+	</update>
+	
+</mapper>

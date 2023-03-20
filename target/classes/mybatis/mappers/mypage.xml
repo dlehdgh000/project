@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.mypage">
+<!-- 리절트 맵 정의 -->
+	<resultMap id="orderMovieResult" type="OrderVO">
+		<result property="order_id" column="order_id" />
+		<result property="member_id" column="member_id" />
+		<result property="movie_id" column="movie_id" />
+		<result property="movie_title" column="movie_title" />
+		<result property="movie_price" column="movie_price" />
+<!-- 	<result property="order_total_price" column="order_total_price" /> -->
+		<result property="movie_people_qty" column="movie_people_qty" />
+		<result property="movie_seat_number" column="movie_seat_number" />
+		<result property="orderer_name" column="orderer_name" />
+		<result property="receiver_name" column="receiver_name" />
+		<result property="receiver_hp1" column="receiver_hp1" />
+		<result property="receiver_hp2" column="receiver_hp2" />
+		<result property="receiver_hp3" column="receiver_hp3" />
+		<result property="ticket_number" column="ticket_number" />
+		<result property="articleno" column="articleno" />
+		
+		<result property="pay_method" column="pay_method" />
+		<result property="card_com_name" column="card_com_name" />
+		<result property="card_pay_month" column="card_pay_month" />
+		
+		<result property="pay_orderer_hp_num" column="pay_orderer_hp_num" />
+		<result property="pay_order_time" column="pay_order_time" />
+		<result property="final_total_price" column="final_total_price" />
+		
+		<result property="movie_fileName" column="movie_fileName" />
+	</resultMap> 
+	
+
+	<!-- 내 예매내역 확인 -->
+	 <select id="selectMyOrderGoodsList" resultMap="orderMovieResult"  parameterType="String"  >
+	    <![CDATA[
+			select * from movie_order
+            where member_id=#{member_id}
+            order by pay_order_time desc
+		]]>
+	</select>
+	
+<!-- 예매 내역확인 -->
+	<select id="selectMyOrderInfo" resultMap="orderMovieResult"   parameterType="String"  >
+	    <![CDATA[
+		    select * from movie_order
+            where member_id=#{member_id}
+    	]]>
+	</select>
+	
+	<!-- 날짜별 주문내역 확인 -->
+		<select id="selectMyOrderHistoryList" resultMap="orderMovieResult"   parameterType="java.util.Map"  >
+	    <![CDATA[
+		  select * from movie_order
+          where member_id=#{member_id}
+          and  to_char(pay_order_time,'yyyy-mm-dd')  between #{beginDate} and #{endDate}
+          order by pay_order_time desc
+    	]]>
+	</select>	
+	<!-- 내 정보 수정 -->
+	<update id="updateMyInfo" parameterType="java.util.HashMap">
+	   update movie_member
+			   <set>
+			      <if test=" member_pw!='' and member_pw!=null">
+			        member_pw=#{member_pw},
+			      </if>
+			      <if test=" member_hp1!='' and member_hp1!=null">
+			         member_hp1=#{member_hp1},
+			      </if>
+			      <if test=" member_hp2!='' and member_hp2!=null">
+			         member_hp2=#{member_hp2},
+			      </if>
+			      <if test=" member_hp3!='' and member_hp3!=null">
+			         member_hp3=#{member_hp3},
+			      </if>
+			   </set>
+					where 
+					member_id=#{member_id}
+	</update>
+	<!-- 내 정보 상세보기 -->
+	<!-- <select id="selectMyDetailInfo" resultType="memberVO"   parameterType="String"  >
+	    <![CDATA[
+			select * from movie_member
+			where member_id = #{member_id}
+    	]]>
+	</select>	 -->
+	
+	<select id="selectMyDetailInfo" resultType="com.project.movie.member.vo.MemberVO"   parameterType="string"  >
+			select * from movie_member
+			where member_id = #{member_id, jdbcType=VARCHAR}
+	</select>	
+	
+		<select id="selectMyOrderDetailInfo" resultType="OrderVO"   parameterType="String"  >
+	    <![CDATA[
+			select * from movie_order
+			where member_id = #{member_id}
+    	]]>
+	</select>	
+	
+	<!-- 예매 취소 -->
+	<update id="updateMyOrderCancel" parameterType="String">
+	   update movie_order
+	 	  set delivery_state='cancel_order'
+	   where order_id=#{order_id}
+	</update>
+	
+</mapper>

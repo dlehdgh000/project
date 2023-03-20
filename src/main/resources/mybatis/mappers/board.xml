@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- mapping -->
+<mapper namespace ="mapper.board">
+
+	<!-- movie_details table resultMap -->
+	<resultMap id = "boardResult" type = "BoardVO">
+		<result property = "boardNO" column = "boardno"/>
+		<result property = "boardTitle" column = "boardtitle"/>
+		<result property = "boardContent" column = "boardcontent"/>
+		<result property = "boardWriteDate" column = "boardwritedate"/>
+		<result property = "member_id" column = "member_id"/>
+		<result property = "boardView" column = "boardview"/>
+		<result property = "boardPush" column = "boardPush"/>
+		<result property = "starpoint" column = "starpoint"/>
+		<result property = "movie_id" column = "movie_id"/>
+	</resultMap>
+
+	<resultMap id = "imageFileVO" type = "imageFileVO">
+		<result property = "image_id" column = "image_id"/>
+		<result property = "boardNO" column = "boardNO"/>
+		<result property = "fileName" column = "fileName"/>
+		<result property = "fileType" column = "fileType"/>
+		<result property = "creDate" column = "creDate"/>
+		<result property = "reg_id" column = "reg_id"/>
+	</resultMap>
+
+	<select id = "noticeList" resultMap="boardResult">
+		<![CDATA[
+		select * from noticeboard
+		]]>
+	</select>
+	
+	
+	<select id = "eventList" resultMap="boardResult">
+		<![CDATA[
+		select * from eventboard
+		]]>
+	</select>
+	
+	
+	<select id = "reviewList" parameterType = "java.util.Map" resultMap="boardResult">
+		<![CDATA[
+		select * from (
+     			select ROWNUM as recNum,     						
+     						boardNO,				
+     						boardTitle,
+     						boardContent,
+     						boardWritedate,
+                            member_id,
+     						boardView,
+     						boardPush,
+     						starpoint,
+                            movie_id
+     						from (select 
+     											boardNO,
+     											boardTitle,
+     											boardContent,
+     											boardWritedate,
+                                                member_id,
+     											boardView,
+     											boardPush,
+     											starpoint,
+     											movie_id
+     											from reviewboard  																			
+     											ORDER BY boardNO DESC)
+     					)
+     					where recNum between(#{section}-1)*100+(#{pageNum}-1)*10+1 and (#{section}-1)*100+#{pageNum}*10
+		]]>
+	</select>
+	
+	<select id = "selectTotalReview" resultType = "int">
+  	<![CDATA[
+  		select count(boardNO) from reviewBoard
+  	]]>
+    </select>
+	
+	<select id = "noticeView" resultMap="boardResult" parameterType="int">
+		<![CDATA[
+		select * from noticeBoard
+		where boardNO = #{noticeBoardNO}
+		]]>
+	</select>
+	
+		<select id = "eventView" resultMap="boardResult" parameterType="int">
+		<![CDATA[
+		select * from eventBoard
+		where boardNO = #{eventBoardNO}
+		]]>
+	</select>
+	
+		<select id = "reviewView" resultMap="boardResult" parameterType="int">
+		<![CDATA[
+		select * from reviewBoard
+		where boardNO = #{reviewBoardNO}
+		]]>
+	</select>
+	
+	<select id = "NewBoardNO" resultType = "int">
+		<![CDATA[
+		select nvl(max(boardNO),0)+1 from reviewBoard
+		]]>
+	</select>
+	
+		<select id = "NewBoardNO1" resultType = "int">
+		<![CDATA[
+		select nvl(max(boardNO),0)+1 from eventBoard
+		]]>
+	</select>
+	
+			<select id = "NewBoardNO2" resultType = "int">
+		<![CDATA[
+		select nvl(max(boardNO),0)+1 from noticeBoard
+		]]>
+	</select>
+	
+	<select id = "addReview" parameterType = "java.util.Map">
+		<![CDATA[
+			insert into reviewboard(boardno,boardtitle,boardcontent,boardwritedate,member_id,starpoint,movie_id)
+			values(#{boardNO},#{boardTitle},#{boardContent},sysdate,#{member_id},#{starpoint},#{movie_id})
+			
+		]]>
+	</select>
+	
+	<select id = "addEvent" parameterType = "java.util.Map">
+		<![CDATA[
+			insert into eventboard(boardno,boardtitle,boardwritedate)
+			values(#{boardNO},#{boardTitle},sysdate)
+			
+		]]>
+	</select>
+	
+		<select id = "addNotice" parameterType = "java.util.Map">
+		<![CDATA[
+			insert into noticeboard(boardno,boardtitle,boardcontent,boardwritedate,member_id)
+			values(#{boardNO},#{boardTitle},#{boardContent},sysdate,#{member_id})
+			
+		]]>
+	</select>
+	
+		
+		<insert id="insertMovieImageFile" parameterType="java.util.Map">
+		<foreach item="item"  collection="list"   open="INSERT ALL" 
+                  separator=" " close="SELECT * FROM DUAL" >
+		   into REVIEW_DETAIL_IMAGE (image_id,
+		                                     boardNO,
+											 fileName,
+											 fileType,
+											 reg_id
+											 )
+					values(#{item.image_id},
+				  		   #{item.boardNO},
+						   #{item.fileName},
+						   #{item.fileType},
+						   #{item.reg_id}
+						  )
+		</foreach>
+	</insert> 
+	
+	<insert id="insertEventImageFile" parameterType="java.util.Map">
+		<foreach item="item"  collection="list"   open="INSERT ALL" 
+                  separator=" " close="SELECT * FROM DUAL" >
+		   into EVENT_DETAIL_IMAGE (image_id,
+		                                     boardNO,
+											 fileName,
+											 fileType
+											 )
+					values(#{item.image_id},
+				  		   #{item.boardNO},
+						   #{item.fileName},
+						   #{item.fileType}
+						  )
+		</foreach>
+	</insert> 
+	
+	<update id = "push" >
+	<![CDATA[
+	update reviewboard 
+  		set boardpush = boardpush+1 
+  		where boardNO = #{boardNO}
+	]]>
+	</update>
+	
+		<update id = "viewcnt" >
+	<![CDATA[
+	update reviewboard 
+  		set boardview = boardview+1 
+  		where boardNO = #{boardNO}
+	]]>
+	</update>
+	
+		<select id = "selectreviewList" resultMap="boardResult" parameterType = "String">
+		<![CDATA[
+		select * from reviewboard
+		where member_id = #{member_id}
+		]]>
+	</select>
+
+	<select id = "selectImageFileList" resultMap = "imageFileVO" parameterType = "int">
+		<![CDATA[
+			select * from review_detail_image
+			where boardNO = #{boardNO}
+		]]>
+	</select>
+	
+		<select id = "selectImageFileList1" resultMap = "imageFileVO" parameterType = "int">
+		<![CDATA[
+			select * from event_detail_image
+			where boardNO = #{boardNO}
+		]]>
+	</select>
+	
+	<select id="selectNewImageFileNO" resultType="int"  >
+    <![CDATA[
+      SELECT  nvl(max(image_id),0) from review_detail_image
+      ]]>
+  </select>
+  
+  	<select id="selectNewImageFileNOEvent" resultType="int"  >
+    <![CDATA[
+      SELECT  nvl(max(image_id),0) from event_detail_image
+      ]]>
+  </select>
+  
+  <delete id="delete" parameterType = "int">
+  	<![CDATA[
+  	delete from reviewboard
+  	where boardno = #{boardNO}
+  	]]>
+  </delete>
+  
+    <delete id="deleteNotice" parameterType = "int">
+  	<![CDATA[
+  	delete from noticeboard
+  	where boardno = #{boardNO}
+  	]]>
+  </delete>
+  
+    <delete id="deleteEvent" parameterType = "int">
+  	<![CDATA[
+  	delete from eventboard
+  	where boardno = #{boardNO}
+  	]]>
+  </delete>
+	
+  <select id = "deleteImage" resultMap = "imageFileVO" parameterType = "int">
+  	<![CDATA[
+  	select filename from review_detail_image
+	where boardno = #{boardNO}
+  	]]>
+  </select>
+  
+  <delete id = "deleteImageDB" parameterType = "int">
+  	<![CDATA[
+  	delete from review_detail_image
+  	where boardno = #{boardNO}
+  	]]>
+  </delete>
+  
+  <select id = "deleteImageEvent" resultMap = "imageFileVO" parameterType = "int">
+  	<![CDATA[
+  	select filename from event_detail_image
+	where boardno = #{boardNO}
+  	]]>
+  </select>
+  
+  <delete id = "deleteImageDBEvent" parameterType = "int">
+  	<![CDATA[
+  	delete from event_detail_image
+  	where boardno = #{boardNO}
+  	]]>
+  </delete>
+
+</mapper>

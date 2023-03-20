@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.movie">
+	<!-- 리절트 맵 정의 -->
+	<resultMap id="movieResult" type="movieVO">
+		<result property="movie_id" column="movie_id" />
+		<result property="movie_title" column="movie_title" />
+		<result property="movie_keyword" column="movie_keyword" />
+		<result property="movie_genre" column="movie_genre" />
+		<result property="movie_time" column="movie_time" />
+		<result property="movie_director" column="movie_director" />
+		<result property="movie_actor" column="movie_actor" />
+		<result property="movie_story" column="movie_sales_story" />
+		<result property="movie_openday" column="movie_openday" />
+		<result property="movie_rank" column="movie_rank" />
+		<result property="movie_producer" column="movie_producer" />
+		<result property="movie_status" column="movie_status" />
+		<result property="filename" column="filename" />
+		<result property="starpoint" column="starpoint" />
+		<result property="oneLineReivewNO" column = "onelinereviewno"/>
+		<result property="id" column = "id"/>
+		<result property="content" column = "content"/>
+		
+	</resultMap>
+
+	<!-- <resultMap id="imageResult" type="ImageFileVO"> <result property="goods_id" 
+		column="goods_id" /> <result property="fileName" column="fileName" /> <result 
+		property="reg_id" column="reg_id" /> <result property="image_id" column="image_id" 
+		/> <result property="fileType" column="fileType" /> </resultMap> -->
+
+	<select id="selectMovieDetail" resultType="movieVO"
+		parameterType="int">
+	 <![CDATA[
+	  		   
+		  		      select t.*
+          from(
+			select g.*,d.fileName,s.* from MOVIE_DETAILS g, movie_detail_image d, (select avg(starpoint) starpoint from reviewboard where movie_id = #{movie_id}) s
+        	where g.movie_id=d.movie_id
+        	and d.filetype='detail_image'
+        	and g.movie_id = #{movie_id}
+            order by g.movie_id desc)  t
+	             where   rowNum <16
+	 ]]>
+	</select>
+
+<!-- 쿼리바꿔야됌  -->
+	<select id="searchMovie" resultType="movieVO"
+		parameterType="String">
+	 <![CDATA[
+ 	  		      select t.*
+          from(
+			select g.*,d.fileName from MOVIE_DETAILS g, movie_detail_image d
+        	where g.movie_id=d.movie_id 
+        	and d.filetype='detail_image'
+        	and g.movie_title like '%' || #{movie_keyword} || '%' 
+            order by g.movie_id desc)  t
+	             where   rowNum <16
+	 ]]>
+	</select>
+	
+		<select id="selectKeywordSearch" resultType="String"   parameterType="String"  >
+	    <![CDATA[
+        select movie_title from movie_details 
+        where         
+        movie_title like '%'|| #{keyword} || '%'
+        order by movie_id desc
+		]]>
+	</select>
+	
+	<select id = "NewOneLineReviewNO" resultType = "int">
+		<![CDATA[
+		select nvl(max(ONELINEREVIEWNO),0)+1 from ONELINEREVIEW
+		]]>
+	</select>
+	
+	<insert id = "addOneLineReview" parameterType = "java.util.Map">
+		<![CDATA[
+		insert into ONELINEREVIEW
+		values(#{oneLineReviewNO},#{movie_id},#{id},#{content})
+		]]>
+	</insert>
+	
+	<select id = "oneLineReviewList" parameterType = "int" resultType = "movieVO">
+		<![CDATA[
+		select * from onelinereview
+		where movie_id = #{movie_id}
+		]]>
+	</select>
+
+</mapper>
