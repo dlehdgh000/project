@@ -15,12 +15,13 @@ public class MovieServiceImpl implements MovieService {
 	@Autowired
 	MovieDAO movieDAO;
 
+	
 	@Override
 	public List<MovieVO> movieDetail(int movie_id) throws Exception {
 		List<MovieVO> movieList = movieDAO.viewMovieDetail(movie_id);
 		return movieList;
 	}
-
+	
 	@Override
 	public List<MovieVO> searchMovie(String movie_keyword) throws Exception {
 		List<MovieVO> searchList = movieDAO.searchMovie(movie_keyword);

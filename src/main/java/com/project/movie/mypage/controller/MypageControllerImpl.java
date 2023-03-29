@@ -29,6 +29,7 @@ import com.project.movie.order.vo.OrderVO;
 @RequestMapping(value = "/mypage")
 public class MypageControllerImpl implements MypageController {
 
+	// 의존성 주입
 	@Autowired
 	private MyPageService myPageService;
 
@@ -55,6 +56,7 @@ public class MypageControllerImpl implements MypageController {
 		ModelAndView mav = new ModelAndView();
 		String viewName = (String) request.getAttribute("viewName");
 
+		//로그인이 안되어 있을시
 		if (session.getAttribute("member") == null) {
 //			mav.addObject("session", session.getAttribute("member"));
 //			MemberVO vo = (MemberVO) session.getAttribute("member");
@@ -62,7 +64,7 @@ public class MypageControllerImpl implements MypageController {
 
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out = response.getWriter();
-			out.println("<script>alert('濡쒓렇�씤 �썑 �씠�슜媛��뒫�빀�땲�떎.');history.back();</script>");
+			out.println("<script>alert('로그인을 해주세요!.');history.back();</script>");
 			out.flush();
 			response.flushBuffer();
 			out.close();
@@ -75,14 +77,14 @@ public class MypageControllerImpl implements MypageController {
 
 		memberVO = (MemberVO) session.getAttribute("memberInfoList");
 		MemberVO memberInfo = myPageService.myDetailInfo(member_id);
-		mav.addObject("memberInfo", memberInfo); // �굹�쓽 �젙蹂� �쓣�슦湲� �걹
+		mav.addObject("memberInfo", memberInfo); // 회원 정보 출력
 		memberVO = (MemberVO) session.getAttribute("member");
 //		String member_id2 = orderVO.getMember_id2();
 		String member_id2 = memberVO.getMember_id();
-		orderVO = (OrderVO) session.getAttribute("orderInfoList");
+		orderVO = (OrderVO) session.getAttribute("orderInfoList"); //예매 내역 출력
 		List orderInfoList = myPageService.findMyOrderInfo(member_id2);
 
-		List selectReviewList = boardService.selectReviewList(member_id2);
+		List selectReviewList = boardService.selectReviewList(member_id2); //내가 남긴 리뷰 출력
 
 		mav.addObject("reviewInfoList", selectReviewList);
 		mav.addObject("orderInfoList", orderInfoList);
@@ -98,7 +100,7 @@ public class MypageControllerImpl implements MypageController {
 		return mav;
 	}
 
-//	내 예매내역
+//	내 예매내역 자세히 보기
 	@Override
 	@RequestMapping(value = "/myOrderDetail.do", method = RequestMethod.GET)
 	public ModelAndView myOrderDetail(String member_id, HttpServletRequest request, HttpServletResponse response)
@@ -118,21 +120,6 @@ public class MypageControllerImpl implements MypageController {
 		return mav;
 	}
 
-// 예매취소
-	@Override
-	public ModelAndView cancelMyOrder(String order_id, HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-// �궇吏쒕퀎 �삁留� �궡�뿭 �솗�씤
-	@Override
-	public ModelAndView listMyOrderHistory(Map<String, String> dateMap, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 // 	내정보 자세히 보기
 	@Override
@@ -143,7 +130,7 @@ public class MypageControllerImpl implements MypageController {
 		return mav;
 	}
 
-// 수정하기
+//  내 정보 수정하기
 	@Override
 	@RequestMapping(value = "/modifyMyInfo.do", method = RequestMethod.POST)
 	public ResponseEntity modifyMyInfo(@RequestParam("attribute") String attribute, @RequestParam("value") String value,
@@ -172,7 +159,7 @@ public class MypageControllerImpl implements MypageController {
 		memberMap.put("member_id", member_id);
 
 		System.out.println("memberMap.toString()" + memberMap.toString());
-		// ������ ȸ�� ������ �ٽ� ���ǿ� �����Ѵ�.
+		
 		memberVO = (MemberVO) myPageService.modifyMyInfo(memberMap);
 		session.removeAttribute("member");
 		session.setAttribute("member", memberVO);

@@ -27,10 +27,10 @@ import com.project.movie.order.vo.OrderVO;
 import com.project.movie.util.SmsService;
 
 @Controller("orderController")
-@RequestMapping(value = "/order") // 클占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙
+@RequestMapping(value = "/order") // 예매하기
 public class OrderControllerImpl implements OrderController {
 
-	// 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙
+	//의존성
 	@Autowired
 	private OrderService orderService;
 
@@ -40,36 +40,36 @@ public class OrderControllerImpl implements OrderController {
 	@Autowired
 	private MemberVO memberVO;
 
-	// 占쏙옙占쏙옙 占쏙옙占쏙옙 화占썽에 占쏙옙占쏙옙 占쏙옙占쏙옙트 占쌨쇽옙占쏙옙
+	// 빠른예매
 	@Override
 	@RequestMapping(value = "/ticketing.do", method = { RequestMethod.POST, RequestMethod.GET }) // 占쌨쇽옙占쏙옙 占쏙옙占쏙옙
 																									// 占쏙옙占쏙옙
 	public ModelAndView MovieTitleList(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		List titleList = orderService.MovieTitleList(); // 占쏙옙占쏙옙 占쏙옙占쏙옙
-		List titleList1 = orderService.MovieTitleList1(); // 占쏙옙占쏙옙 占쏙옙占쏙옙
-		String viewName = (String) request.getAttribute("viewName"); // 占쏙옙占쏙옙占�
+		List titleList = orderService.MovieTitleList(); // 상영중인 영화 목록
+		List titleList1 = orderService.MovieTitleList1(); // 상영 예정작 목록
+		String viewName = (String) request.getAttribute("viewName"); // 현재 페이지 이름
 		ModelAndView mav = new ModelAndView(viewName);
-		mav.addObject("titleList", titleList); // view占쌤울옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙트
-		mav.addObject("titleList1", titleList1); // view占쌤울옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙트
+		mav.addObject("titleList", titleList); 
+		mav.addObject("titleList1", titleList1); 
 		return mav;
 	}
-
+// 좌석 선택
 	@RequestMapping(value = "/seatselect.do", method = RequestMethod.POST)
 	private ModelAndView seatSelect(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession();
-		Enumeration enu = request.getParameterNames(); // Form占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙 enu占쏙옙 占싱는곤옙
+		Enumeration enu = request.getParameterNames();
 		while (enu.hasMoreElements()) {
 			String name = (String) enu.nextElement();
 			String value = request.getParameter(name);
 			session.setAttribute(name, value);
-			// 占쏙옙占쏙옙占쏙옙 占쏙옙占싣울옙 占쏙옙 enu占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙斂占� 확占쏙옙
+			// 세션 값 확인
 			System.out.println("name :" + name);
 			System.out.println("value :" + value);
 		}
-		String movie_place = (String) session.getAttribute("movie_place"); // 占쏙옙占실울옙占쏙옙 1占쏙옙,2占쏙옙,3占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙
-		List seatList = orderService.selectSeatList(); // 1占쏙옙
-		List seatList1 = orderService.selectSeatList1(); // 2占쏙옙
-		List seatList2 = orderService.selectSeatList2(); // 3占쏙옙
+		String movie_place = (String) session.getAttribute("movie_place"); // 세션 유지 될 동안 상영관 넣어줌
+		List seatList = orderService.selectSeatList(); // 1관
+		List seatList1 = orderService.selectSeatList1(); // 2관
+		List seatList2 = orderService.selectSeatList2(); // 3관
 		String viewName = (String) request.getAttribute("viewName");
 		ModelAndView mav = new ModelAndView(viewName);
 		mav.addObject("seatList", seatList);
@@ -79,19 +79,19 @@ public class OrderControllerImpl implements OrderController {
 		return mav;
 
 	}
-
+//	예매하기
 	@RequestMapping(value = "/ticketingForm.do", method = RequestMethod.POST)
 	private ModelAndView ticketingForm(@RequestParam("seatNum") int seatNum, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
 		HttpSession session = request.getSession();
-		System.out.println("ticketingForm.do :" + seatNum);
+		System.out.println("ticketingForm.do :" + seatNum); // 선택한 좌석
 		session.setAttribute("seatNum", seatNum);
 		String member_id = (String) session.getAttribute("member_id");
-		String movie_place = (String) session.getAttribute("movie_place"); // 1占쏙옙
-		String movieTitle = (String) session.getAttribute("movieTitle"); // 占쏙옙화占쏙옙占쏙옙
-		String movie_screening_date = (String) session.getAttribute("movie_screening_date"); // 占쏢영놂옙짜
-		String movie_running_time = (String) session.getAttribute("movie_running_time"); // 占쏢영시곤옙
+		String movie_place = (String) session.getAttribute("movie_place"); // 상영 장소 (ex : 1관,2관....)
+		String movieTitle = (String) session.getAttribute("movieTitle"); // 영화 이름
+		String movie_screening_date = (String) session.getAttribute("movie_screening_date"); // 상영 날짜
+		String movie_running_time = (String) session.getAttribute("movie_running_time"); // 상영 시작 시간
 		String viewName = (String) request.getAttribute("viewName");
 		ModelAndView mav = new ModelAndView(viewName);
 		mav.addObject("movieTitle", movieTitle);
@@ -104,7 +104,8 @@ public class OrderControllerImpl implements OrderController {
 		return mav;
 
 	}
-
+	
+//	영화 선택 
 	@RequestMapping(value = "/timeselect.do", method = RequestMethod.POST)
 	private ModelAndView timeSelect(@RequestParam("movieNum") int movieNum,
 			@RequestParam("movieTitle") String movieTitle, HttpServletRequest request, HttpServletResponse response)
@@ -133,7 +134,7 @@ public class OrderControllerImpl implements OrderController {
 			String name = (String) enu.nextElement();
 			String value = request.getParameter(name);
 			orderMap.put(name, value);
-			// 占쏙옙占쏙옙占쏙옙 占쏙옙占싣울옙 占쏙옙 enu占쏙옙 占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙斂占� 확占쏙옙
+			
 			System.out.println("name :" + name);
 			System.out.println("value :" + value);
 
@@ -156,7 +157,7 @@ public class OrderControllerImpl implements OrderController {
 		orderMap.remove("movie_price");
 		orderMap.put("movie_price", movie_price);
 
-		// 占쌉력곤옙 占쏙옙占쏙옙占쌔쇽옙 占싹놂옙占쏙옙 占쏙옙침 + 占십울옙 占쏙옙占쏙옙
+		// orderMap에 폰 번호 하나로 넣기
 		String hpNum1 = (String) orderMap.get("hpNum1");
 		String hpNum2 = (String) orderMap.get("hpNum2");
 		String hpNum3 = (String) orderMap.get("hpNum3");
@@ -195,12 +196,12 @@ public class OrderControllerImpl implements OrderController {
 		session.removeAttribute("movie_running_time");
 		session.removeAttribute("movie_place");
 
-		// 占쏙옙占쏙옙 클占쏙옙占쏙옙占쏙옙 티占싹뱄옙호 占쏙옙占쏙옙占쏙옙占쏙옙
+		// 티켓 번호 랜덤 생성
 		Random random = new Random();
 		int ticket_number = random.nextInt(999999);
 		orderMap.put("ticket_number", ticket_number);
 
-		// 占쏙옙 확占쏙옙
+		// 값 확인
 		System.out.println("pay_orderer_hp_num :" + pay_orderer_hp_num);
 		System.out.println("card_number :" + card_number);
 		System.out.println("card_pay_month :" + card_pay_month);
@@ -235,7 +236,7 @@ public class OrderControllerImpl implements OrderController {
 		
 		System.out.println(movie_title+"\n"+ movie_running_time+"\n"+ movie_place +"\n"+ movie_seat_number +"\n 티켓 번호 :"+ticket_number);
 		
-//		 臾몄옄 諛쒖넚
+//		예매 성공시 문자 전송(COOL SMS API)
 //		SmsService smsService = new SmsService();
 //		smsService.sendMmsByResourcePath("01033657184", hp_num,
 //				movie_title+"\n"+ movie_running_time+"\n"+ movie_place +"\n"+ movie_seat_number +"\n티켓 번호 :"+ticket_number );

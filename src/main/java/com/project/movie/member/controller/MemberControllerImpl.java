@@ -28,6 +28,7 @@ public class MemberControllerImpl implements MemberController {
 	@Autowired
 	private MemberService memberService;
 
+	//로그인 화면
 	@RequestMapping(value = "/loginForm.do", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView main(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ModelAndView mav = new ModelAndView();
@@ -128,10 +129,5 @@ public class MemberControllerImpl implements MemberController {
 		return resEntity;
 	}
 
-	@Override
-	public ModelAndView listMembers(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

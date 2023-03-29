@@ -60,6 +60,7 @@ public class MovieControllerImpl implements MovieController {
 		return mav;
 	}
 
+	//영화 검색
 	@Override
 	@RequestMapping(value = "/searchMovie.do", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView searchMovie(@RequestParam("movie_keyword") String movie_keyword, HttpServletRequest request,
@@ -76,7 +77,7 @@ public class MovieControllerImpl implements MovieController {
 
 		return mav;
 	}
-
+	//검색 자동 완성
 	@RequestMapping(value = "/keywordSearch.do", method = RequestMethod.GET, produces = "application/text; charset=utf8")
 	public @ResponseBody String keywordSearch(@RequestParam("keyword") String keyword, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -98,6 +99,7 @@ public class MovieControllerImpl implements MovieController {
 		return jsonInfo;
 	}
 	
+	//영화 상세보기 시 한줄평
 	@RequestMapping(value = "/oneLineReview.do", method = RequestMethod.POST)
 	public ResponseEntity oneLineReview(@RequestParam("movie_id") String movie_id,
 										@RequestParam("id") String id,
