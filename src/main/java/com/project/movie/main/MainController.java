@@ -27,6 +27,7 @@ public class MainController {
 	@Autowired
 	private BoardService boardService;
 
+	//메인 화면
 	@RequestMapping(value = "/main/main.do", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView main(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		List titleList = orderService.MovieTitleList();

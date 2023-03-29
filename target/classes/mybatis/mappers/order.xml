@@ -63,7 +63,7 @@
 		]]>
 	</select>
 	
-	
+	<!-- 상영관 좌석 리스트 -->
 	<select id = "seatList" resultMap = "seat">
 		<![CDATA[
 		select * from movie_seat
@@ -82,6 +82,7 @@
 		]]>
 	</select>
 	
+	<!-- 상영관 좌석 업데이트 -->
 	<update id = "seatStatusUpdate" parameterType = "java.util.Map">
 		<![CDATA[
 		update movie_seat
@@ -106,6 +107,7 @@
 		]]>
 	</update>
 	
+	<!-- 예매시 예매 정보 -->
 	<insert id = "addOrder" parameterType = "java.util.Map">
 		<![CDATA[
 			INSERT INTO MOVIE_ORDER(
@@ -151,6 +153,7 @@
 		]]>
 	</insert>
 	
+	<!-- 영화 정보 -->
 	<select id = "findMovieId" resultType = "int" parameterType = "String">
 		<![CDATA[
 		select movie_id from movie_details
@@ -158,6 +161,7 @@
 		]]>
 	</select>
 	
+	<!-- 예매 내역 찾기 -->
 	<select id="selectMyOrderDetailInfo" resultMap="orderMovieResult"   parameterType="String"  >
 	    <![CDATA[
 			select * from movie_order

@@ -49,6 +49,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 	@Autowired
 	private MemberVO memberVO;
 
+	//공지글 목록
 	@Override
 	@RequestMapping(value = "/notice.do", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView noticeList(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -59,7 +60,8 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		mav.addObject("noticeList", noticeList);
 		return mav;
 	}
-
+	
+	//이벤트 글 목록
 	@Override
 	@RequestMapping(value = "/event.do", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView eventList(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -71,6 +73,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		return mav;
 	}
 
+	//리뷰글 목록
 	@Override
 	@RequestMapping(value = "/review.do", method = { RequestMethod.POST, RequestMethod.GET })
 	public ModelAndView reviewList(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -97,7 +100,8 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		mav.addObject("boardMap", boardMap);
 		return mav;
 	}
-
+	
+	//공지글 상세보기
 	@Override
 	@RequestMapping(value = "/noticeView.do", method = RequestMethod.GET)
 	public ModelAndView noticeView(@RequestParam("noticeBoardNO") int noticeBoardNO, HttpServletRequest request,
@@ -113,6 +117,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		return mav;
 	}
 
+	// 이벤트글 상세보기
 	@Override
 	@RequestMapping(value = "/eventView.do", method = RequestMethod.GET)
 	public ModelAndView eventView(@RequestParam("eventBoardNO") int eventBoardNO, HttpServletRequest request,
@@ -127,7 +132,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		mav.addObject("boardMap", boardMap);
 		return mav;
 	}
-
+	// 리뷰글 상세보기
 	@Override
 	@RequestMapping(value = "/reviewView.do", method = RequestMethod.GET)
 	public ModelAndView reviewView(@RequestParam("reviewBoardNO") int reviewBoardNO, HttpServletRequest request,
@@ -144,6 +149,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		return mav;
 	}
 
+	//리뷰 달기
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/addReview.do", method = RequestMethod.POST)
@@ -229,6 +235,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		return resEnt;
 	}
 
+	//글쓰기 폼
 	@RequestMapping(value = "/*Form.do", method = RequestMethod.GET)
 	public ModelAndView Form(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String viewName = (String) request.getAttribute("viewName");
@@ -239,6 +246,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		return mav;
 	}
 
+	//추천하기
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/push.do", method = RequestMethod.GET)
@@ -272,7 +280,8 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		}
 		return resEnt;
 	}
-
+	
+	//삭제하기
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/delete.do", method = RequestMethod.GET)
@@ -324,6 +333,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		return resEnt;
 	}
 
+	// 이벤트 글 추가
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/addEvent.do", method = RequestMethod.POST)
@@ -386,6 +396,7 @@ public class BoardControllerImpl extends BaseController implements BoardControll
 		return resEntity;
 	}
 
+	//공지글 추가
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/addNotice.do", method = RequestMethod.POST)

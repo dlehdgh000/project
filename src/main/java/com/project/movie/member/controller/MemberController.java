@@ -24,6 +24,4 @@ public interface MemberController {
 	public ResponseEntity overlapped(@RequestParam("id") String id, HttpServletRequest request,
 			HttpServletResponse response) throws Exception;
 
-	public ModelAndView listMembers(HttpServletRequest request, HttpServletResponse response) throws Exception;
-
 }

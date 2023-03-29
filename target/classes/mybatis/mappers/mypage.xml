@@ -51,15 +51,7 @@
     	]]>
 	</select>
 	
-	<!-- 날짜별 주문내역 확인 -->
-		<select id="selectMyOrderHistoryList" resultMap="orderMovieResult"   parameterType="java.util.Map"  >
-	    <![CDATA[
-		  select * from movie_order
-          where member_id=#{member_id}
-          and  to_char(pay_order_time,'yyyy-mm-dd')  between #{beginDate} and #{endDate}
-          order by pay_order_time desc
-    	]]>
-	</select>	
+
 	<!-- 내 정보 수정 -->
 	<update id="updateMyInfo" parameterType="java.util.HashMap">
 	   update movie_member
@@ -81,30 +73,17 @@
 					member_id=#{member_id}
 	</update>
 	<!-- 내 정보 상세보기 -->
-	<!-- <select id="selectMyDetailInfo" resultType="memberVO"   parameterType="String"  >
-	    <![CDATA[
-			select * from movie_member
-			where member_id = #{member_id}
-    	]]>
-	</select>	 -->
-	
 	<select id="selectMyDetailInfo" resultType="com.project.movie.member.vo.MemberVO"   parameterType="string"  >
 			select * from movie_member
 			where member_id = #{member_id, jdbcType=VARCHAR}
 	</select>	
 	
+	<!-- 내 예매내역 상세보기 -->
 		<select id="selectMyOrderDetailInfo" resultType="OrderVO"   parameterType="String"  >
 	    <![CDATA[
 			select * from movie_order
 			where member_id = #{member_id}
     	]]>
 	</select>	
-	
-	<!-- 예매 취소 -->
-	<update id="updateMyOrderCancel" parameterType="String">
-	   update movie_order
-	 	  set delivery_state='cancel_order'
-	   where order_id=#{order_id}
-	</update>
 	
 </mapper>

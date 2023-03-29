@@ -49,6 +49,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 	@Autowired
 	private BoardService boardService;
 
+	//좌석 관리
 	@Override
 	@RequestMapping(value = "/seatManage.do", method = { RequestMethod.GET, RequestMethod.POST })
 	public ModelAndView seatManage(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -66,6 +67,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		return mav;
 	}
 
+	//새로운 영화 등록
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/addMovie.do", method = RequestMethod.POST)
@@ -138,6 +140,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		return resEntity;
 	}
 
+	//영화 관리 페이지
 	@Override
 	@RequestMapping(value = "/movieManage.do", method = RequestMethod.GET)
 	public ModelAndView movieManage(HttpServletRequest request, HttpServletResponse reponse) throws Exception {
@@ -149,6 +152,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		return mav;
 	}
 
+	//영화 정보 수정
 	@Override
 	@RequestMapping(value = "/movieModify.do", method = RequestMethod.GET)
 	public ModelAndView movieModify(@RequestParam("movie_id") int movie_id, HttpServletRequest request,
@@ -164,7 +168,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		mav.setViewName(viewName);
 		return mav;
 	}
-
+// 영화 삭제
 	@Override
 	@RequestMapping(value = "/deleteMovie.do", method = RequestMethod.GET)
 	@ResponseBody
@@ -215,6 +219,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		return resEnt;
 	}
 
+	//영화 정보 하나씩 수정
 	@RequestMapping(value = "/modifyMovieInfo.do", method = { RequestMethod.POST })
 	public ResponseEntity modifyGoodsInfo(@RequestParam("movie_id") String movie_id,
 			@RequestParam("attribute") String attribute, @RequestParam("value") String value,
@@ -233,7 +238,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		resEntity = new ResponseEntity(message, responseHeaders, HttpStatus.OK);
 		return resEntity;
 	}
-
+// 입력한 영화 정보 전부 수정
 	@Override
 	@ResponseBody
 	@RequestMapping(value = "/allModifyMovie.do", method = RequestMethod.POST)
@@ -292,7 +297,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		}
 		return resEnt;
 	}
-
+// 영화 포스터 수정
 	@RequestMapping(value = "/modifyMovieImageInfo.do", method = { RequestMethod.POST })
 	public void modifyGoodsImageInfo(MultipartHttpServletRequest multipartRequest, HttpServletResponse response)
 			throws Exception {
@@ -347,7 +352,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		}
 
 	}
-
+// 영화관(1,2,3관)좌석 수정
 	@RequestMapping(value = "/modifySeat.do", method = { RequestMethod.POST })
 	public ResponseEntity modifySeat(@RequestParam("movie_place") String movie_place, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -382,6 +387,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		return resEntity;
 	}
 
+	//게시판 관리
 	@Override
 	@RequestMapping(value = "/boardListManage.do", method = RequestMethod.GET)
 	public ModelAndView boardListManage(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -396,7 +402,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		mav.addObject("noticeList", noticeList);
 		return mav;
 	}
-
+// 공지글 삭제
 	@RequestMapping(value = "/deleteBoard.do", method = RequestMethod.GET)
 	public ResponseEntity deleteBoard(@RequestParam("boardNO") int boardNO, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -412,6 +418,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		return resEntity;
 	}
 
+	//이벤트글 삭제
 	@RequestMapping(value = "/deleteBoard1.do", method = RequestMethod.GET)
 	public ResponseEntity deleteBoard1(@RequestParam("boardNO") int boardNO, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -438,6 +445,7 @@ public class AdminControllerImpl extends BaseController implements AdminControll
 		return resEntity;
 	}
 
+	//리뷰글 삭제
 	@RequestMapping(value = "/deleteBoard2.do", method = RequestMethod.GET)
 	public ResponseEntity deleteBoard2(@RequestParam("boardNO") int boardNO, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
