@@ -233,12 +233,13 @@ public class OrderControllerImpl implements OrderController {
 		String movie_seat_number = (String)orderMap.get("movie_seat_number");
 		
 		
-		System.out.println(movie_title+", "+ movie_running_time+", "+ movie_place +", "+ movie_seat_number +", 티켓 번호 :"+ticket_number);
+		System.out.println(movie_title+"\n"+ movie_running_time+"\n"+ movie_place +"\n"+ movie_seat_number +"\n 티켓 번호 :"+ticket_number);
 		
 //		 臾몄옄 諛쒖넚
-		SmsService smsService = new SmsService();
-		smsService.sendMmsByResourcePath("01033657184", hp_num,
-				movie_title+", "+ movie_running_time+", "+ movie_place +", "+ movie_seat_number +"번 좌석, 티켓 번호 :"+ticket_number );
+//		SmsService smsService = new SmsService();
+//		smsService.sendMmsByResourcePath("01033657184", hp_num,
+//				movie_title+"\n"+ movie_running_time+"\n"+ movie_place +"\n"+ movie_seat_number +"\n티켓 번호 :"+ticket_number );
+		
 		return resEnt;
 	}
 
